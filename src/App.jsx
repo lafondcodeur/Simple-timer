@@ -1,44 +1,49 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const App = () => {
-  const inputRef = useRef(null);
+  const timerRef = useRef(null);
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
 
-  const onSubmit = () => {
-    console.log(inputRef.current);
-    console.log(inputRef.current.value);
-    inputRef.current.style.backgroundColor = "red";
-    inputRef.current.style.color = "white";
-    inputRef.current.setAttribute("placeHolder", "Updated...");
+  const toggleTimer = () => {
+    if (isRunning) {
+      //Clear Intervalle to stop the runner
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    } else {
+      //Start timer
+      timerRef.current = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+    setIsRunning(!isRunning);
+  };
+
+  const resetTimer = () => {
+    clearInterval(timerRef.current);
+    setIsRunning(false);
+    setTime(0);
+    timerRef.current = null;
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        useRef Example
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg text-center">
+      <h2 className="text-4xl font-semibold text-gray-800 mt-4 mb-6">
+        Timer: {time}
       </h2>
 
-      <div className="mb-6">
-        <p className="text-gray-600 mb-2">Your text will appear below:</p>
-        <div className="min-h-[60px] p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          {/* This is where the text will appear */}
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Type something..."
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-
-        <button
-          onClick={onSubmit}
-          className="w-full bg-blue-500 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Submit
-        </button>
-      </div>
+      <button
+        onClick={toggleTimer}
+        className="m-3 bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+      >
+        {isRunning ? "Pause" : "Start"}
+      </button>
+      <button
+        onClick={resetTimer}
+        className="mt-3 bg-red-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+      >
+        Reset
+      </button>
     </div>
   );
 };
